@@ -3,13 +3,21 @@ circle(radius)
     height radius
     border-radius 50%
 
-+stagger(iterations,delay)
-    for n in iterations
-        width n*100px       
-        &:nth-child({n})
-            animation-delay delay*n
+stagger(iterations,delay)
+    stagger-animation iterations delay
+    stagger-transition iterations delay
 
+stagger-animation(iterations,delay)
+    iterations -= 1
+    for iteration in (0..iterations)
+        &:nth-child({iteration})
+            animation-delay delay*iteration
 
+stagger-transition(iterations,delay)
+    iterations -= 1
+    for iteration in (0..iterations)
+        &:nth-child({iteration})
+            transition-delay delay*iteration
 /*
 .circle(@radius) {
     width: @radius;
