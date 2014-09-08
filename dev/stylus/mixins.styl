@@ -1,0 +1,42 @@
+circle(radius)
+    width radius
+    height radius
+    border-radius 50%
+
++stagger(iterations,delay)
+    for n in iterations
+        width n*100px       
+        &:nth-child({n})
+            animation-delay delay*n
+
+
+/*
+.circle(@radius) {
+    width: @radius;
+    height: @radius;
+    border-radius: ceil(@radius/2)+1;
+}
+
+.background-rgba(@color, @alpha) {
+    @rgba: rgba(red(@color), green(@color), blue(@color), @alpha);
+    @argb: argb(@rgba);
+    background-color: @color;
+    background-color: @rgba;
+    filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr=@{argb}, endColorstr=@{argb})";
+    -ms-filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr=@{argb}, endColorstr=@{argb})";
+}
+
+.opacity (@opacity) {
+    @opacityPercentage: @opacity * 100;
+    opacity: @opacity;
+    -ms-filter: ~"progid:DXImageTransform.Microsoft.Alpha(opacity=(@{opacityPercentage}))";
+    filter: ~"alpha(opacity=(@{opacityPercentage}))";
+}
+
+.stagger(@i;@delay) when (@i > 0){
+    &:nth-child(@{i}) {
+        animation-delay: @delay*@i
+    }
+    .stagger((@i - 1),@delay);    // next iteration
+}
+*/
