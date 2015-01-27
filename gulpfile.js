@@ -5,7 +5,6 @@ var gulp			= require('gulp'),
 	coffee			= require('gulp-coffee'),
 	livereload		= require('gulp-livereload'),
 	rename			= require('gulp-rename'),
-	imagemin		= require('gulp-imagemin'),
 	cssmin			= require('gulp-cssmin'),
 	sourcemaps		= require('gulp-sourcemaps'),
 	plumber			= require('gulp-plumber'),
@@ -29,12 +28,11 @@ var jsThirdParty = [
 
 gulp.task('watch', function() {
 	livereload.listen();
-	watch({glob:paths.dev + '/css/**/*.css'}).on('change',livereload.changed);
 	
-	watch({glob:paths.dev + '/stylus/**/*.styl'}, function(files){
+	watch(paths.dev + '/stylus/**/*.styl', function(files){
 		gulp.start('build:css')
 	})
-	watch({glob:paths.dev + '/coffee/**/*.coffee'}, function(files){
+	watch(paths.dev + '/coffee/**/*.coffee', function(files){
 		gulp.start('build:coffee')
 	}) 
 });
@@ -80,12 +78,13 @@ gulp.task('build:coffee', function() {
 gulp.task('build:css', function() {
 	gulp.src(paths.dev + '/stylus/core.styl')
 		.pipe(plumber())
-		.pipe(sourcemaps.init())
-		.pipe(stylus())
+		.pipe(stylus({
+            sourcemap: {inline: true}
+        }))
 		.pipe(prefix())
-		.pipe(sourcemaps.write())
 		.pipe(rename('styles.css'))
 		.pipe(gulp.dest(paths.dev + '/css/'))
+		.pipe(livereload())
 		.pipe(notify('Stylus compiled'))
 })
 
