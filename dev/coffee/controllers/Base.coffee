@@ -1,3 +1,2 @@
-controllers.controller 'BaseCtrl', ($scope, TestService)->
-	$scope.name = 'gooby'
-	TestService.alert $scope.name
+controllers.controller 'BaseCtrl', ($scope)->
+	# Put your stuff here.
