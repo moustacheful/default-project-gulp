@@ -24,6 +24,7 @@ gulp.task 'watch', ->
 	watch paths.dev + '/stylus/**/*.styl', (files) -> gulp.start('build:css')
 	watch paths.dev + '/coffee/**/*.coffee', (files) ->	gulp.start('build:coffee')
 	watch paths.dev + '/partials/**/*.jade', (files) -> gulp.start('build:templates')
+	return
 
 gulp.task 'build', [
 	'bundle:js'
@@ -39,6 +40,7 @@ gulp.task 'build:templates', ->
 		.pipe(concat('app.templates.js'))
 		.pipe(gulp.dest(paths.dev + '/js'))
 		.pipe(notify('Templates compiled'))
+	return
 
 gulp.task 'build:coffee', ->
 	gulp.src([
@@ -59,6 +61,7 @@ gulp.task 'build:coffee', ->
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest(paths.dev + '/js'))
 		.pipe(notify('Coffee compiled'))
+	return
 
 gulp.task 'build:css', ->
 	gulp.src(paths.dev + '/stylus/core.styl')
@@ -66,13 +69,14 @@ gulp.task 'build:css', ->
 			errorHandler: notify.onError('Stylus error: <%= error.message %>')
 		)
 		.pipe(stylus({
-            sourcemap: {inline: true}
-        }))
+			sourcemap: {inline: true}
+		}))
 		.pipe(prefix())
 		.pipe(rename('styles.css'))
 		.pipe(gulp.dest(paths.dev + '/css/'))
 		.pipe(livereload())
 		.pipe(notify('Stylus compiled'))
+	return
 
 gulp.task 'build:html', ->
 	gulp.src(paths.dev + '/jade/*.jade')
@@ -87,12 +91,14 @@ gulp.task 'build:html', ->
 			message:'Jade compiled'
 			onLast: true
 		)
+	return
 
 gulp.task 'bundle:css',['build:css'], ->
 	gulp.src(sources.css)
 		.pipe(concat('styles.min.css'))
 		.pipe(cssmin())
 		.pipe(gulp.dest(paths.dev + '/resources'))
+	return
 
 
 gulp.task 'bundle:js',['build:templates','build:coffee'], ->
@@ -100,3 +106,4 @@ gulp.task 'bundle:js',['build:templates','build:coffee'], ->
 		.pipe(concat('bundle.min.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest(paths.dev + '/resources'))
+	return
