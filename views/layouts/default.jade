@@ -5,8 +5,8 @@ html(lang="en")
 		title Document
 		
 		each src in sources.css
-			script(src=css)
-		
+			link(rel="stylesheet", href=src)
+					
 		each src in sources.js
 			script(src=src)
 
