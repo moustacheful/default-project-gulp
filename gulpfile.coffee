@@ -12,6 +12,9 @@ concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
 notify = require 'gulp-notify'
 jade = require 'gulp-jade'
+html2js = require 'gulp-html2js'
+nodemon = require 'gulp-nodemon'
+jadeUtils = require 'sf-jade-utils'
 
 sources = require './sources'
 paths =
@@ -21,9 +24,20 @@ paths =
 
 gulp.task 'watch', ->
 	livereload.listen()
+
 	watch paths.dev + '/stylus/**/*.styl', (files) -> gulp.start('build:css')
 	watch paths.dev + '/coffee/**/*.coffee', (files) ->	gulp.start('build:coffee')
 	watch paths.dev + '/partials/**/*.jade', (files) -> gulp.start('build:templates')
+
+	nodemon
+		script: 'server.js'
+		ext: 'js'
+		ignore: [
+			paths.dev.substr(1) + '/**'
+			'bower_components/**/*'
+			'node_modules/**/*'
+		]
+
 	return
 
 gulp.task 'build', [
@@ -31,16 +45,22 @@ gulp.task 'build', [
 	'bundle:css'
 ]
 
+
 gulp.task 'build:templates', ->
 	gulp.src(paths.dev + '/partials/**/*.jade')
-		.pipe(jade())
+		.pipe(jade(
+			locals: 
+				u:jadeUtils
+		))
 		.pipe(html2js({
+			base: paths.dev
 			outputModuleName: 'app.templates'
 		}))
 		.pipe(concat('app.templates.js'))
 		.pipe(gulp.dest(paths.dev + '/js'))
 		.pipe(notify('Templates compiled'))
 	return
+
 
 gulp.task 'build:coffee', ->
 	gulp.src([
@@ -61,7 +81,8 @@ gulp.task 'build:coffee', ->
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest(paths.dev + '/js'))
 		.pipe(notify('Coffee compiled'))
-	return
+	return 
+
 
 gulp.task 'build:css', ->
 	gulp.src(paths.dev + '/stylus/core.styl')
@@ -69,8 +90,8 @@ gulp.task 'build:css', ->
 			errorHandler: notify.onError('Stylus error: <%= error.message %>')
 		)
 		.pipe(stylus({
-			sourcemap: {inline: true}
-		}))
+            sourcemap: {inline: true}
+        }))
 		.pipe(prefix())
 		.pipe(rename('styles.css'))
 		.pipe(gulp.dest(paths.dev + '/css/'))
@@ -78,13 +99,17 @@ gulp.task 'build:css', ->
 		.pipe(notify('Stylus compiled'))
 	return
 
+
 gulp.task 'build:html', ->
+	console.log jadeUtils
 	gulp.src(paths.dev + '/jade/*.jade')
 		.pipe plumber(
 			errorHandler: notify.onError('Jade error: <%= error.message %>')
 		)
 		.pipe jade(
-			pretty: true
+			pretty: true,
+			locals: 
+				u:jadeUtils
 		)
 		.pipe gulp.dest(paths.dev)
 		.pipe notify(
@@ -92,6 +117,7 @@ gulp.task 'build:html', ->
 			onLast: true
 		)
 	return
+
 
 gulp.task 'bundle:css',['build:css'], ->
 	gulp.src(sources.css)
