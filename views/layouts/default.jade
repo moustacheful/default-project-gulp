@@ -2,13 +2,26 @@
 html(lang="en")
 	head
 		meta(charset="UTF-8")
+		meta(name="viewport",content="maximum-scale=1,width=device-width")
+	
 		title Document
 		
-		each src in sources.css
-			link(rel="stylesheet", href=src)
-					
-		each src in sources.js
-			script(src=src)
+		link(rel="stylesheet", href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css")
+		link(rel="shortcut icon", type="image/x-icon", href="images/favicon.ico")
+
+		if dist
+			link(rel="stylesheet", href="css/styles.min.css")
+			script(src="js/bundle.min.js")
+			//[if lt IE 9]> <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script> <![endif]
+		
+		else
+			each src in sources.css
+				link(rel="stylesheet", href=src)
+						
+			each src in sources.js
+				script(src=src)
+
+			script(src="//localhost:35729/livereload.js")
 
 	body(ng-app="app")
 		block content

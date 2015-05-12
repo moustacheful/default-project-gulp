@@ -2,3 +2,12 @@ extend layouts/default
 
 block content
 	h1 hello
+	p=u.lorem(200)
+	ul
+		- var i = 0
+		- while( i < 8)
+			li=u.lorem(5)
+			- i++
+	
+	.date=u.date.format('D [de] MMMM YYYY')
+	.relative-date=u.date.relative()

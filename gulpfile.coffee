@@ -17,6 +17,8 @@ nodemon = require 'gulp-nodemon'
 jadeUtils = require 'sf-jade-utils'
 
 sources = require './sources'
+sources.prependFullPath()
+
 paths =
 	bower: './bower_components'
 	dev: './dev'
@@ -41,8 +43,10 @@ gulp.task 'watch', ->
 	return
 
 gulp.task 'build', [
+	'build:html'
 	'bundle:js'
 	'bundle:css'
+	'copy'
 ]
 
 
@@ -101,21 +105,22 @@ gulp.task 'build:css', ->
 
 
 gulp.task 'build:html', ->
-	console.log jadeUtils
-	gulp.src(paths.dev + '/jade/*.jade')
+	gulp.src(['./views/**/*.jade','!./views/layouts/**/*'])
 		.pipe plumber(
 			errorHandler: notify.onError('Jade error: <%= error.message %>')
 		)
 		.pipe jade(
 			pretty: true,
-			locals: 
+			locals:
+				dist: true
 				u:jadeUtils
 		)
-		.pipe gulp.dest(paths.dev)
+		.pipe gulp.dest(paths.dist)
 		.pipe notify(
 			message:'Jade compiled'
 			onLast: true
 		)
+
 	return
 
 
@@ -123,7 +128,7 @@ gulp.task 'bundle:css',['build:css'], ->
 	gulp.src(sources.css)
 		.pipe(concat('styles.min.css'))
 		.pipe(cssmin())
-		.pipe(gulp.dest(paths.dev + '/resources'))
+		.pipe(gulp.dest(paths.dist + '/css'))
 	return
 
 
@@ -131,5 +136,12 @@ gulp.task 'bundle:js',['build:templates','build:coffee'], ->
 	gulp.src(sources.js)
 		.pipe(concat('bundle.min.js'))
 		.pipe(uglify())
-		.pipe(gulp.dest(paths.dev + '/resources'))
+		.pipe(gulp.dest(paths.dist + '/js'))
 	return
+
+
+gulp.task 'copy', ->
+	gulp.src(paths.dev + '/fonts/*')
+		.pipe(gulp.dest(paths.dist + '/fonts'))
+	gulp.src(paths.dev + '/images/*')
+		.pipe(gulp.dest(paths.dist + '/images'))
